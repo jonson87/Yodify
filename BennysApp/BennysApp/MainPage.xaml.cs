@@ -26,10 +26,7 @@ namespace BennysApp
                 Spacing = 15
             };
 
-            panel.Children.Add(activity = new ActivityIndicator
-            {
-                IsRunning = false,
-            });
+            
 
             panel.Children.Add(new Label
             {
@@ -50,6 +47,11 @@ namespace BennysApp
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
+            panel.Children.Add(activity = new ActivityIndicator
+            {
+                IsRunning = false,
+            });
+
             panel.Children.Add(new Image
             {
                 Source = ImageSource.FromUri(new Uri("https://i.ebayimg.com/images/g/NvgAAOSwHPlWgxnU/s-l1600.jpg")),
@@ -57,6 +59,7 @@ namespace BennysApp
 
             });
 
+            
             yodify.Clicked += Yodify_Clicked;
 
             this.Content = panel;
@@ -64,6 +67,7 @@ namespace BennysApp
 
         private async void Yodify_Clicked(object sender, EventArgs e)
         {
+
             activity.IsRunning = true;
             var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={phrase.Text}");
             var yodaResult = "";
@@ -74,16 +78,28 @@ namespace BennysApp
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
 
                 var response = await client.GetAsync(url);
-                yodaResult = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                {
+
+                    yodaResult = await response.Content.ReadAsStringAsync();
+                    activity.IsRunning = false;
+
+                    var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
+
+                    if (answer)
+                    {
+                        await CrossTextToSpeech.Current.Speak(yodaResult);
+                    }
+                }
+                else
+                {
+                    activity.IsRunning = false;
+
+                    await DisplayAlert("Error", "Something went wrong", "Ok", " ");
+                }
             }
 
-            activity.IsRunning = false;
-            var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
 
-            if (answer)
-            {
-                await CrossTextToSpeech.Current.Speak(yodaResult);
-            }
             //DependencyService.Get<ITextToSpeech>().Speak(yodaResult);
         }
     }
