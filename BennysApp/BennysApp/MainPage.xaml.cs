@@ -11,52 +11,60 @@ namespace BennysApp
 {
     public partial class MainPage : ContentPage
     {
-        Entry phrase;
+        readonly Entry phrase;
         Button yodify;
+        ActivityIndicator activity;
 
         public MainPage()
         {
+            InitializeComponent();
 
-            //this.Padding = new Thickness(20, 20, 20, 20);
+            this.Padding = new Thickness(20, 20, 20, 20);
+
             var panel = new StackLayout
             {
-                Spacing = 15,
-                BackgroundColor = Color.Black
+                Spacing = 15
             };
 
-            panel.Children.Add(new Image
+            panel.Children.Add(activity = new ActivityIndicator
             {
-                
+                IsRunning = false,
             });
 
             panel.Children.Add(new Label
             {
-                Text = "Enter a shit:",
-                TextColor = Color.White,
+                Text = "Enter a phrase:",
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
             panel.Children.Add(phrase = new Entry
             {
                 Placeholder = "Phrase",
-                TextColor = Color.White,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
             panel.Children.Add(yodify = new Button
             {
                 Text = "Yodify",
+                BackgroundColor = Color.Green,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+            });
+
+            panel.Children.Add(new Image
+            {
+                Source = ImageSource.FromUri(new Uri("https://i.ebayimg.com/images/g/NvgAAOSwHPlWgxnU/s-l1600.jpg")),
+                Margin = new Thickness(10, 10, 10, 10),
+                
             });
 
             yodify.Clicked += Yodify_Clicked;
 
             this.Content = panel;
-            
         }
 
         private async void Yodify_Clicked(object sender, EventArgs e)
         {
+            activity.IsRunning = true;
             var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={phrase.Text}");
             var yodaResult = "";
 
@@ -67,11 +75,15 @@ namespace BennysApp
 
                 var response = await client.GetAsync(url);
                 yodaResult = await response.Content.ReadAsStringAsync();
+                     }
+
+            activity.IsRunning = false;
+            var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
+
+            if (answer)
+            {
+                await CrossTextToSpeech.Current.Speak(yodaResult);
             }
-
-            await CrossTextToSpeech.Current.Speak(yodaResult);
-
-            await DisplayAlert("Yoda says:", yodaResult, "OK", " ");
             //DependencyService.Get<ITextToSpeech>().Speak(yodaResult);
         }
     }

@@ -52,6 +52,12 @@ namespace BennysApp.Views
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
+            panel.Children.Add(new Image
+            {
+                Source = ImageSource.FromUri(new Uri("https://i.ebayimg.com/images/g/NvgAAOSwHPlWgxnU/s-l1600.jpg")),
+                Margin = new Thickness(10,10,10,10)
+            });
+
             yodify.Clicked += Yodify_Clicked;
 
             this.Content = panel;
@@ -77,10 +83,6 @@ namespace BennysApp.Views
             if (answer)
             {
                 await CrossTextToSpeech.Current.Speak(yodaResult);
-            }
-            else
-            {
-                await DisplayAlert("Error", "Something went wrong", "Ok", " ");
             }
             //DependencyService.Get<ITextToSpeech>().Speak(yodaResult);
         }
