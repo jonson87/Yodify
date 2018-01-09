@@ -3,10 +3,5 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:BennysApp"
              x:Class="BennysApp.MainPage">
-    <Grid>
 
-
-        <ActivityIndicator x:Name="activityIndicator" IsRunning="False" VerticalOptions="Center" HorizontalOptions="Center" />
-
-    </Grid>
 </ContentPage>

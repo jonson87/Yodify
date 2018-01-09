@@ -11,7 +11,7 @@ namespace BennysApp
 {
     public partial class MainPage : ContentPage
     {
-        readonly Entry phrase;
+        Entry phrase;
         Button yodify;
         ActivityIndicator activity;
 
@@ -25,8 +25,6 @@ namespace BennysApp
             {
                 Spacing = 15
             };
-
-            
 
             panel.Children.Add(new Label
             {
@@ -49,7 +47,7 @@ namespace BennysApp
 
             panel.Children.Add(activity = new ActivityIndicator
             {
-                IsRunning = false,
+                IsRunning = false
             });
 
             panel.Children.Add(new Image
@@ -58,7 +56,6 @@ namespace BennysApp
                 Margin = new Thickness(10, 10, 10, 10),
 
             });
-
             
             yodify.Clicked += Yodify_Clicked;
 
@@ -67,24 +64,25 @@ namespace BennysApp
 
         private async void Yodify_Clicked(object sender, EventArgs e)
         {
-
             activity.IsRunning = true;
-            var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={phrase.Text}");
+            //var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={phrase.Text}");
+            var url2 = new Uri($"http://yoda-api.appspot.com/api/v1/yodish?text={phrase.Text}");
+
+
             var yodaResult = "";
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("X-Mashape-Key", "rV4HAvtbk7mshDk62x0aJ1frDwIGp13FqhIjsnZ5xnFgEuaWRh");
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                //client.DefaultRequestHeaders.Add("X-Mashape-Key", "rV4HAvtbk7mshDk62x0aJ1frDwIGp13FqhIjsnZ5xnFgEuaWRh");
+                //client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(url2);
                 if (response.IsSuccessStatusCode)
                 {
-
                     yodaResult = await response.Content.ReadAsStringAsync();
                     activity.IsRunning = false;
 
-                    var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
+                    var answer = await DisplayAlert("Yoda says:", yodaResult.Replace("{","").Replace("}","").Replace("yodish","").Replace(":","").Replace("\"",""), "Play", "Cancel");
 
                     if (answer)
                     {
@@ -98,8 +96,6 @@ namespace BennysApp
                     await DisplayAlert("Error", "Something went wrong", "Ok", " ");
                 }
             }
-
-
             //DependencyService.Get<ITextToSpeech>().Speak(yodaResult);
         }
     }

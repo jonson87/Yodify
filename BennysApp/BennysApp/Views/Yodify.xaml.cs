@@ -13,9 +13,9 @@ namespace BennysApp.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Yodify : ContentPage
     {
-        readonly Entry phrase;
-        Button yodify;
-        ActivityIndicator activity;
+        readonly Entry _phrase;
+        readonly Button _yodify;
+        readonly ActivityIndicator _activity;
 
         public Yodify()
         {
@@ -28,7 +28,7 @@ namespace BennysApp.Views
                 Spacing = 15
             };
 
-            panel.Children.Add(activity = new ActivityIndicator
+            panel.Children.Add(_activity = new ActivityIndicator
             {
                 IsRunning = false,
             });
@@ -36,16 +36,17 @@ namespace BennysApp.Views
             panel.Children.Add(new Label
             {
                 Text = "Enter a phrase:",
+                TextColor = Color.Black,
                 FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
             });
 
-            panel.Children.Add(phrase = new Entry
+            panel.Children.Add(_phrase = new Entry
             {
                 Placeholder = "Phrase",
-                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label))
+                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
             });
 
-            panel.Children.Add(yodify = new Button
+            panel.Children.Add(_yodify = new Button
             {
                 Text = "Yodify",
                 BackgroundColor = Color.Green,
@@ -56,17 +57,18 @@ namespace BennysApp.Views
             {
                 Source = ImageSource.FromUri(new Uri("https://i.ebayimg.com/images/g/NvgAAOSwHPlWgxnU/s-l1600.jpg")),
                 Margin = new Thickness(10,10,10,10)
+                
             });
 
-            yodify.Clicked += Yodify_Clicked;
+            _yodify.Clicked += Yodify_Clicked;
 
             this.Content = panel;
         }
 
         private async void Yodify_Clicked(object sender, EventArgs e)
         {
-            activity.IsRunning = true;
-            var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={phrase.Text}");
+            _activity.IsRunning = true;
+            var url = new Uri($"https://yoda.p.mashape.com/yoda?sentence={_phrase.Text}");
             var yodaResult = "";
 
             using (var client = new HttpClient())
@@ -77,7 +79,7 @@ namespace BennysApp.Views
                 var response = await client.GetAsync(url);
                 yodaResult = await response.Content.ReadAsStringAsync();
             }
-            activity.IsRunning = false;
+            _activity.IsRunning = false;
             var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
             
             if (answer)
