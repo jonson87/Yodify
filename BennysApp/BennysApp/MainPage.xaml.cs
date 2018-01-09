@@ -54,7 +54,7 @@ namespace BennysApp
             {
                 Source = ImageSource.FromUri(new Uri("https://i.ebayimg.com/images/g/NvgAAOSwHPlWgxnU/s-l1600.jpg")),
                 Margin = new Thickness(10, 10, 10, 10),
-                
+
             });
 
             yodify.Clicked += Yodify_Clicked;
@@ -70,12 +70,12 @@ namespace BennysApp
 
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("X-Mashape-Key", "7Oz7m29qHXmshPYFl3OCqvRnZAzVp1HnHVRjsniZtXkGB7DXMq");
+                client.DefaultRequestHeaders.Add("X-Mashape-Key", "rV4HAvtbk7mshDk62x0aJ1frDwIGp13FqhIjsnZ5xnFgEuaWRh");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
 
                 var response = await client.GetAsync(url);
                 yodaResult = await response.Content.ReadAsStringAsync();
-                     }
+            }
 
             activity.IsRunning = false;
             var answer = await DisplayAlert("Yoda says:", yodaResult, "Play", "Cancel");
